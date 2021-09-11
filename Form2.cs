@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using TrainChart.Model;
+using System.Globalization;
 
 namespace TrainChart
 {
@@ -34,10 +35,10 @@ namespace TrainChart
 
         private void buttonSpeeds_Click(object sender, EventArgs e)
         {
-            var trainType = checkBoxEn57.Checked ? TrainType.EN57 : TrainType.SA133;
+           var trainType = checkBoxEn57.Checked ? TrainType.EN57 : TrainType.SA133;
 
-            var form = new Form1(checkBoxLine1.Checked, trainType);
-            form.ShowDialog();
+           var form = new Form1(checkBoxLine1.Checked, trainType);
+           form.ShowDialog();
         }
 
         private void checkBoxEn57_Click(object sender, EventArgs e)

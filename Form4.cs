@@ -32,9 +32,10 @@ namespace TrainChart
             InitializeComponent();
             GetValues();
             LoadStation();
+            button1.TabIndex = 1000;
             // LoadTrains();
 
-            cartesianChart1.Series = new SeriesCollection
+            cartesianChart2.Series = new SeriesCollection
             {
                 new LineSeries
                 {
@@ -55,9 +56,9 @@ namespace TrainChart
                     val.Add(station.Meters);
                 }
 
-                if (station.IsStation)
+                if (station.IsStation || station.Suffix.Contains("PODS"))
                 {
-                    cartesianChart1.Series.Add(
+                    cartesianChart2.Series.Add(
                         new LineSeries
                         {
                             PointGeometrySize = 0,
@@ -70,7 +71,7 @@ namespace TrainChart
                 } 
                 else
                 {
-                    cartesianChart1.Series.Add(
+                    cartesianChart2.Series.Add(
                         new LineSeries
                         {
                             PointGeometrySize = 0,
@@ -86,7 +87,7 @@ namespace TrainChart
 
             }
 
-            //cartesianChart1.Series.Add(
+            //cartesianChart2.Series.Add(
             //    new LineSeries
             //    { 
             //        Values = GetTrainValues(),
@@ -97,7 +98,7 @@ namespace TrainChart
             //    }
             //);
 
-            cartesianChart1.AxisY.Add(new Axis
+            cartesianChart2.AxisY.Add(new Axis
             {
                 MinValue = 0,
                 MaxValue = GetMaxValue(),
@@ -109,12 +110,12 @@ namespace TrainChart
                 LabelFormatter = val => GetAxisYVal(val),
             });
 
-            foreach(var i in valX)
+        /*    foreach(var i in valX)
             {
                 if (i % 60 == 0)
                 {
                     var val = GetSepartorHourVal(i);
-                    cartesianChart1.Series.Add(
+                    cartesianChart2.Series.Add(
                         new LineSeries
                         {
                             PointGeometrySize = 0,
@@ -131,7 +132,7 @@ namespace TrainChart
                 if (i % 30 == 0)
                 {
                     var val = GetSepartorHourVal(i);
-                    cartesianChart1.Series.Add(
+                    cartesianChart2.Series.Add(
                         new LineSeries
                         {
                             PointGeometrySize = 0,
@@ -145,16 +146,16 @@ namespace TrainChart
 
                     continue;
                 }
-            }
+            }*/
 
-            cartesianChart1.AxisX.Add(new Axis
+            cartesianChart2.AxisX.Add(new Axis
             {
                 LabelFormatter = val => GetAxisVal(val),
                 Separator = new Separator { Step = 10, StrokeDashArray = new DoubleCollection { 5 } },
                 Position = AxisPosition.RightTop,
             });
 
-            cartesianChart1.LegendLocation = LegendLocation.None;
+            cartesianChart2.LegendLocation = LegendLocation.None;
         }
 
         private List<int> GetSepartorHourVal(int i)
@@ -208,8 +209,8 @@ namespace TrainChart
                 {
                     station.IsUsed = true;
                     var name = station.IsStation
-                        ? station.Name.ToUpper()
-                        : station.Name + " [PO]";
+                        ? $"{station.Name} [{station.Suffix}]".ToUpper()
+                        : $"{station.Name} [{station.Suffix}]";
 
 
                     return string.IsNullOrEmpty(station.Blockade)
@@ -235,7 +236,7 @@ namespace TrainChart
                     var meters = direct ? int.Parse(values[0]) : int.Parse(values[1]);
                     var isStation = int.Parse(values[3]);
 
-                    stations.Add(new Station(meters, values[2], isStation, values[4]));
+                    stations.Add(new Station(meters, values[2], isStation, values[4], values[7]));
                 }
 
                 stations = stations.OrderBy(x => x.Meters).ToList();
@@ -280,8 +281,8 @@ namespace TrainChart
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Bitmap bmp = new Bitmap(cartesianChart1.Width, cartesianChart1.Height);
-            cartesianChart1.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
+            Bitmap bmp = new Bitmap(cartesianChart2.Width, cartesianChart2.Height);
+            cartesianChart2.DrawToBitmap(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
             bmp.Save($"{AppDomain.CurrentDomain.BaseDirectory}/Data/chart.png", ImageFormat.Png);
         }
 

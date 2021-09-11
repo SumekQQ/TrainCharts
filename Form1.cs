@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
 using TrainChart.Model;
+using System.Globalization;
 
 namespace TrainChart
 {
@@ -41,13 +42,13 @@ namespace TrainChart
             {
                 new LineSeries
                 {
-                    Values = speedLimits.Select(x => 130).AsGearedValues().WithQuality(Quality.Low),
-                    Fill = System.Windows.Media.Brushes.Pink,
+                    Values = speedLimits.Select(x => 130).AsGearedValues().WithQuality(Quality.High),
+                    Fill = System.Windows.Media.Brushes.Orange,
                     StrokeThickness = 0,
                 },
                 new LineSeries
                 {
-                    Values = speedLimits.AsGearedValues().WithQuality(Quality.Low),
+                    Values = speedLimits.AsGearedValues().WithQuality(Quality.High),
                     Fill = System.Windows.Media.Brushes.White,
                     StrokeThickness = 0,
                 },
@@ -92,15 +93,15 @@ namespace TrainChart
                 valX = new List<string>();
                 valY = new List<double>();
                 speedLimits = new List<double>();
-
+                var info = CultureInfo.GetCultureInfo("en-EN");
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
                     var values = line.Split(',');
 
                     valX.Add(values[0]);
-                    valY.Add(double.Parse(values[1]));
-                    speedLimits.Add(double.Parse(values[2]));
+                    valY.Add(double.Parse(values[1].ToString(), info));
+                    speedLimits.Add(double.Parse(values[2].ToString(), info));
                 }
             }
         }
@@ -149,7 +150,7 @@ namespace TrainChart
         {
             var name = station.Name;
 
-            if (name.Contains("Czarnowo") || name.Contains("Śniadowo Łącznica POGP"))
+            if (name.Contains("Czarnowo") || name == ("Śniadowo") || name.Contains("Baciuty"))
             {
                 return string.Empty;
             }
